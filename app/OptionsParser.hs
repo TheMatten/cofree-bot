@@ -1,6 +1,5 @@
 module OptionsParser where
 
-import CofreeBot
 import Data.Text qualified as T
 import Network.Matrix.Client
 import Options.Applicative qualified as Opt
@@ -77,17 +76,21 @@ parseServer =
 --- Main Parser ---
 -------------------
 
-data Command = LoginCmd LoginCredentials | TokenCmd TokenCredentials
+data Command
+  = LoginCmd LoginCredentials
+  | TokenCmd TokenCredentials
+  | ReplCmd
 
 mainParser :: Opt.Parser Command
 mainParser = Opt.subparser
-  ( Opt.command "gen-token" (Opt.info (fmap LoginCmd parseLogin) (Opt.progDesc "Generate a token from a username/password"))
-    <> Opt.command "run" (Opt.info (fmap TokenCmd parseTokenCredentials) (Opt.progDesc "Run a bot with an auth token"))
+  (  Opt.command "gen-token" (Opt.info (fmap LoginCmd parseLogin) (Opt.progDesc "Generate a token from a username/password"))
+  <> Opt.command "run" (Opt.info (fmap TokenCmd parseTokenCredentials) (Opt.progDesc "Run a bot with an auth token"))
+  <> Opt.command "repl" (Opt.info (pure ReplCmd) (Opt.progDesc "Run a bot locally in testing REPL"))
   )
 
 parserInfo :: Opt.ParserInfo Command
-parserInfo =
-  Opt.info (mainParser Opt.<**> Opt.helper)
-     (Opt.fullDesc
-       <> Opt.progDesc "Print a greeting for TARGET"
-       <> Opt.header "hello - a test for optparse-applicative" )
+parserInfo = Opt.info (mainParser Opt.<**> Opt.helper)
+  (  Opt.fullDesc
+  <> Opt.progDesc "run supplied bot COMMAND"
+  <> Opt.header "cofree-bot - interactive Matrix bot for cofree.coffee"
+  )

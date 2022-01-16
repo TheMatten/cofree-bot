@@ -47,7 +47,7 @@ runMatrixBot session cache bot s = do
            events = Map.foldMapWithKey (\rid es -> fmap ((RoomID rid,) . view _reContent) es) roomEvents
 
        liftIO $ writeFile (cache <> "/since_file") (T.unpack newSince)
-       --print roomEvents
+       liftIO $ print events
        traverse_ (go ref) events
   where
     go :: MonadIO m => IORef s -> (RoomID, Event) -> m ()

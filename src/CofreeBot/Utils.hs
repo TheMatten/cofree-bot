@@ -1,6 +1,7 @@
 module CofreeBot.Utils where
 
 import Control.Applicative
+import Control.Monad.Except
 import Data.Kind
 
 (|*|) :: Applicative f => f a -> f b -> f (a, b)
@@ -35,3 +36,9 @@ type family Transformers ts m
 
 same :: Either x x -> x
 same = either id id
+
+note :: MonadError e m => e -> Maybe a -> m a
+note e = maybe (throwError e) pure
+
+hush :: Either e a -> Maybe a
+hush = either (const Nothing) Just

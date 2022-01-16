@@ -17,6 +17,7 @@ common common-settings
     DerivingVia
     FlexibleContexts
     FlexibleInstances
+    GADTs
     GeneralizedNewtypeDeriving
     InstanceSigs
     ImportQualifiedPost
@@ -74,19 +75,23 @@ library
     , CofreeBot.Bot.Calculator.Language
     , CofreeBot.Bot.Context
     , CofreeBot.Bot.CoinFlip
+    , CofreeBot.Bot.Magic8Ball
     , CofreeBot.Bot.GHCI
     , CofreeBot.Bot.Hello
     , CofreeBot.Bot.Matrix
     , CofreeBot.Bot.Simple
+    , CofreeBot.Parser
     , CofreeBot.Utils
     , Network.Matrix.Client.Lens
   build-depends:
     , aeson
-    , attoparsec
+    , megaparsec
     , containers
     , directory
     , hint
     , lens
     , mtl
+    , parser-combinators
     , pretty-simple
     , random
+    , scientific

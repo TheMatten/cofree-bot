@@ -24,18 +24,25 @@ TODO:
 
 main :: IO ()
 main = do
-  --runSimpleBot (simplifySessionBot (T.intercalate "\n" . printCalcOutput) programP $ sessionize mempty $ calculatorBot) mempty
-  --runSimpleBot (simplifyCoinFlipBot $ coinFlipBot) (mempty @())
   command <- Opt.execParser parserInfo
   xdgCache <- getUserCacheDir "cofree-bot"
-  let calcBot = liftSimpleBot $ simplifySessionBot (T.intercalate "\n" . printCalcOutput) programP $ sessionize mempty $ calculatorBot
-      helloBot = helloMatrixBot
-      coinFlipBot' = liftSimpleBot $ simplifyCoinFlipBot coinFlipBot
-      bot = rmap (\(x :& y :& z) -> x <> y <> z) $ calcBot /\ helloBot /\ coinFlipBot'
+  let name = "cofree-bot"
+      mentionBot = liftSimpleBot $ Bot $ \i s -> if name `T.isInfixOf` i
+        then runBot bot i s
+        else pure $ BotAction [] s
   case command of
     LoginCmd cred -> do
       session <- login cred
-      runMatrixBot session xdgCache bot mempty
+      runMatrixBot session xdgCache mentionBot mempty
     TokenCmd TokenCredentials{..} -> do
       session <- createSession (getMatrixServer matrixServer) matrixToken
-      runMatrixBot session xdgCache bot mempty
+      runMatrixBot session xdgCache mentionBot mempty
+    ReplCmd -> runSimpleBot bot mempty
+
+bot :: TextBot IO CalcState
+bot = textBotCase
+  [ "hello"       :-|> helloSimpleBot
+  , "flip a coin" :-|> rmap pure coinFlipBot
+  , "🎱"          :-|> rmap pure magic8BallBot
+  , programP      :-|> rmap printCalcOutput calculatorBot
+  ]

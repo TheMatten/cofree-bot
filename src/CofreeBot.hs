@@ -1,18 +1,11 @@
-module CofreeBot ( module Bot
-                 , module Calculator
-                 , module Context
-                 , module CoinFlip
-                 , module Hello
-                 , module Matrix
-                 , module Simple
-                 , module Utils
-                 ) where
+module CofreeBot ( module Exports ) where
 
-import CofreeBot.Bot as Bot
-import CofreeBot.Bot.Context as Context
-import CofreeBot.Bot.Calculator as Calculator
-import CofreeBot.Bot.CoinFlip as CoinFlip
-import CofreeBot.Bot.Hello as Hello
-import CofreeBot.Bot.Matrix as Matrix
-import CofreeBot.Bot.Simple as Simple
-import CofreeBot.Utils as Utils
+import CofreeBot.Bot as Exports
+import CofreeBot.Bot.Context as Exports
+import CofreeBot.Bot.Calculator as Exports
+import CofreeBot.Bot.CoinFlip as Exports
+import CofreeBot.Bot.Magic8Ball as Exports
+import CofreeBot.Bot.Hello as Exports
+import CofreeBot.Bot.Matrix as Exports
+import CofreeBot.Bot.Simple as Exports
+import CofreeBot.Utils as Exports

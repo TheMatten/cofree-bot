@@ -4,12 +4,12 @@ module CofreeBot.Bot.Context where
 
 import CofreeBot.Bot
 import CofreeBot.Bot.Simple
+import CofreeBot.Parser
+import Text.Megaparsec.Char qualified as MC
 import Network.Matrix.Client
 import Data.Map.Strict qualified as Map
-import Data.Attoparsec.Text
 import Data.Text qualified as T
 import Data.Bifunctor (bimap)
-import Control.Applicative
 import Data.Profunctor (second')
 
 --------------------------------------------------------------------------------
@@ -74,13 +74,13 @@ parseSessionInfo p = do
   case keyword of
     New -> pure $ StartSession
     Use -> do
-      _ <- space
+      _ <- MC.space
       n <- decimal <* ": "
       i <- p
       --endOfLine
       pure $ InteractWithSession n i
     End -> do
-      _ <- space
+      _ <- MC.space
       n <- decimal
       pure $ EndSession n
     
@@ -96,7 +96,7 @@ simplifySessionBot tshow p (Bot bot) = Bot $ \i s -> do
       Right si -> fmap (fmap from) $ bot si s
   where
     to :: T.Text -> Either T.Text (SessionInput i)
-    to = fmap (bimap T.pack id) $ parseOnly $ (parseSessionInfo p)
+    to = fmap (bimap T.pack id) $ parse $ (parseSessionInfo p)
 
     from :: SessionOutput o -> [T.Text]
     from = \case
